@@ -5,17 +5,18 @@ import { fetchOrderHistory, setSizeFilter } from '../state/store'
 export default function OrderList() {
   const dispatch = useDispatch();
   const { orders, loading, error } = useSelector((state) => state.orderHistory)
-  const sizeFilter = useSelector((state) => state.sizeFilter)
+  const sizeFilter = useSelector((state) => state.sizeFilter);
 
   useEffect(() => {
     dispatch(fetchOrderHistory());
   }, [dispatch])
 
+  const filteredOrders = sizeFilter === 'ALL'
+    ? orders : orders.filter((order) => order.size === sizeFilter)
+
   const handleFilterClick = (size) => {
     dispatch(setSizeFilter(size))
   }
-
-  const filteredOrders = sizeFilter === 'ALL' ? orders : orders.filter(order => order.size === sizeFilter)
 
   return (
     <div id="orderList">
@@ -28,18 +29,18 @@ export default function OrderList() {
             <div>
               <p><strong>Name:</strong> {order.fullName}</p>
               <p><strong>Size:</strong> {order.size}</p>
-              <p><strong>Toppings:</strong> {order.toppings.join(' ')}</p>
+              <p><strong>Toppings:</strong>{' '} {order.toppings.length > 0 ? order.toppings.join(', ') : 'No toppings'}</p>
             </div>
           </li>
         ))}
       </ol>
       <div id="sizeFilters">
-        Filter by size:
-        {['All', 'S', 'M', 'L'].map(size => (
+        <h3>Filter by size:</h3>
+        {['ALL', 'S', 'M', 'L'].map((size) => (
           <button
+            key={size}
             data-testid={`filterBtn${size}`}
             className={`button-filter${size === sizeFilter ? ' active' : ''}`}
-            key={size}
             onClick={() => handleFilterClick(size)}
           >
             {size}
@@ -47,5 +48,5 @@ export default function OrderList() {
         ))}
       </div>
     </div>
-  )
+  );
 }

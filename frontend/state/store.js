@@ -17,17 +17,22 @@ const orderHistorySlice = createSlice({
     fetchOrdersFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-    }
-  }
+    },
+  },
 });
 
-export const { fetchOrdersRequest, fetchOrdersSuccess, fetchOrdersFailure } = orderHistorySlice.actions;
+export const {
+  fetchOrdersRequest,
+  fetchOrdersSuccess,
+  fetchOrdersFailure
+} = orderHistorySlice.actions;
+
 
 export const fetchOrderHistory = () => async (dispatch) => {
   dispatch(fetchOrdersRequest())
   try {
     const response = await fetch('http://localhost:9009/api/pizza/history')
-    if(!response.ok) {
+    if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`)
     }
     const data = await response.json();
@@ -35,9 +40,8 @@ export const fetchOrderHistory = () => async (dispatch) => {
   } catch (error) {
     dispatch(fetchOrdersFailure(error.message));
   }
-};
 
-const pizzaOrderSlice = createSlice({
+  const pizzaOrderSlice = createSlice({
   name: 'pizzaOrder',
   initialState: { loading: false, error: null, success: null },
   reducers: {
@@ -61,7 +65,15 @@ const pizzaOrderSlice = createSlice({
   }
 });
 
-export const { postOrderRequest, postOrderSuccess, postOrderFailure, resetOrderState} = pizzaOrderSlice.actions;
+export const {
+  postOrderRequest,
+  postOrderSuccess,
+  postOrderFailure,
+  resetOrderState,
+} = pizzaOrderSlice.actions;
+
+
+
 
 export const postPizzaOrder = (orderData) => async (dispatch) => {
   dispatch(postOrderRequest());
@@ -69,7 +81,7 @@ export const postPizzaOrder = (orderData) => async (dispatch) => {
     const response = await fetch('http://localhost:9009/api/pizza/order', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'  
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(orderData)
     });
@@ -88,9 +100,11 @@ const sizeFilterSlice = createSlice({
   initialState: 'All',
   reducers: {
     setSizeFilter: (state, action) => action.payload
-  }
+  },
 });
+
 export const { setSizeFilter } = sizeFilterSlice.actions;
+
 
 export const resetStore = () => configureStore({
   reducer: {
@@ -101,9 +115,8 @@ export const resetStore = () => configureStore({
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
   // middleware: getDefault => getDefault().concat(
-    // if using RTK Query for your networking: add your middleware here
-    // if using Redux Thunk for your networking: you can ignore this
-  
+  // if using RTK Query for your networking: add your middleware here
+  // if using Redux Thunk for your networking: you can ignore this
 });
 
 export const store = resetStore();
