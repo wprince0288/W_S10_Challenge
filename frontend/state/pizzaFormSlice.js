@@ -1,43 +1,41 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import axios from 'axios'
 
-const initialState = {
-    fullName: '',
-    size: '',
-    toppings: {},
-    loading: false,
-    success: false,
-    error: null,
-  };
-  
-  const pizzaFormSlice = createSlice({
-    name: 'pizzaForm',
-    initialState,
-    reducers: {
-      updateFormField: (state, action) => {
-        const { field, value } = action.payload;
-        state[field] = value;
-      },
-      postOrderRequest: (state) => {
-        state.loading = true;
-      },
-      postOrderSuccess: (state) => {
-        state.loading = false;
-        state.success = true;
-      },
-      postOrderFailure: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      },
-      resetForm: () => initialState,
+export const postOrder = createAsyncThunk('pizzaOrder/postOrder', async (order) => {
+  const response = await axios.post('http://localhost:9009/api/pizza/order', order)
+  return response.data
+})
+
+const pizzaFormSlice = createSlice({
+  name: 'pizzaOrder',
+  initialState: { fullName: '', size: '', toppings: [], status: 'idle', error: null },
+  reducers: {
+    updateFormField: (state, action) => {
+      const { field, value } = action.payload
+      state[field] = value
     },
-  });
-  
-  export const {
-    updateFormField,
-    postOrderRequest,
-    postOrderSuccess,
-    postOrderFailure,
-    resetForm,
-  } = pizzaFormSlice.actions;
-  
-  export default pizzaFormSlice.reducer;
+    resetForm: (state) => {
+      state.fullName = ''
+      state.size = ''
+      state.toppings = []
+      state.status = 'idle'
+      state.error = null
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(postOrder.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(postOrder.fulfilled, (state) => {
+        state.status = 'succeeded'
+      })
+      .addCase(postOrder.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+      })
+  },
+})
+
+export const { updateFormField, resetForm } = pizzaFormSlice.actions
+export default pizzaFormSlice.reducer

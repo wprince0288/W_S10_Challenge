@@ -3,37 +3,29 @@ import axios from 'axios'
 
 export const fetchOrders = createAsyncThunk(
   'orderHistory/fetchOrders',
-  async (_, { rejectWithValue }) => {
-    try {
-      dispatch(fetchOrdersRequest())
-      const response = await axios.get('http://localhost:9009/api/pizza/history')
-      return response.data
-    } catch (error) {
-      return rejectWithValue(error.Message)
-    }
-  }
-);
+  async () => {
+    const response = await axios.get('http://localhost:9009/api/pizza/history')
+    return response.data
+  })
 
 const orderHistorySlice = createSlice({
   name: 'orderHistory',
-  initialState: { orders: [], loading: false, error: null },
+  initialState: { orders: [], status: 'idle' },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchOrders.pending, (state) => {
-        state.loading = true;
+        state.status = 'loading'
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
-        state.loading = false;
+        state.status = 'succeeded'
         state.orders = action.payload;
       })
-      .addCase(fetchOrders.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+      .addCase(fetchOrders.rejected, (state) => {
+        state.status = 'failed'
+      })
   },
-});
-
+})
 export default orderHistorySlice.reducer;
 
 

@@ -5,7 +5,6 @@ const sizeFilterSlice = createSlice({
   initialState: 'ALL',
   reducers: {
     setSizeFilter: (state, action) => action.payload,
-
   },
 });
 
