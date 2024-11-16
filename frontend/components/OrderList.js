@@ -1,26 +1,24 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOrders, setSizeFilter } from '../state/orderHistorySlice'
+import { fetchOrders, setFilter } from '../state/orderHistorySlice'
 
 export default function OrderList() {
   const dispatch = useDispatch();
-  const { loading, orders, filter } = useSelector((state) => state.orderList);
+  const { loading, orders = [], filter } = useSelector((state) => state.orderHistory);
 
   useEffect(() => {
     dispatch(fetchOrders())
   }, [dispatch])
 
 
-  const filteredOrders = orders.filter(order =>
-    sizeFilter === 'All' || order.size === sizeFilter
-  );
+  const filteredOrders = orders.filter(
+    (order) => filter === 'ALL' || order.size === filter);
 
   const sizes = ['All', 'S', 'M', 'L']
-  const handleSizeFilterChange = (size) => {
-    dispatch(setSizeFilter(size));
-    dispatch(fetchOrders());  // Optionally, re-fetch the orders based on the filter
-  };
 
+  const handleSizeFilterChange = (size) => {
+    dispatch(setFilter(size));
+  };
 
   return (
     <div id="orderList">
@@ -34,7 +32,8 @@ export default function OrderList() {
                 <div>
                   <p>
                     {order.customer} ordered a size {order.size} with{' '} {order.toppings && order.toppings.length >
-                      0 ? order.toppings.length : 'no'} {' '} toppings
+                      0 ? order.toppings.length : 'no'}{' '}
+                    toppings
                   </p>
                 </div>
               </li>
@@ -43,20 +42,17 @@ export default function OrderList() {
       )}
       <div id="sizeFilters">
         Filter by size:
-        {
-          ['ALL', 'S', 'M', 'L'].map(size => {
-
-            return <button
-              data-testid={`filterBtn${size}`}
-              className={`button-filter${size === fitler ? ' active' : ''}`}
-              onClick={() => dispatch(setSizeFilter(size))}
-              key={size}>
-              {size}
-            </button>
-          })
-        }
+        {sizes.map((size) => (
+          <button
+            data-testid={`filterBtn${size}`}
+            className={`button-filter${size === fitler ? ' active' : ''}`}
+            onClick={() => handleSizeFilterChange(size)}
+            key={size}>
+            {size}
+          </button>
+        ))}
       </div>
     </div>
-  )
+  );
 }
 

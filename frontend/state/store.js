@@ -1,9 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 import orderHistoryReducer from './orderHistorySlice'
-import { postOrder } from './pizzaApie'
+// import { postOrder } from './pizzaApie'
 
-middleware: getDefault => getDefault().concat(
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat()
-)
-
-export const store = resetStore()
+export const store = configureStore({
+  reducer: {
+    orderHistory: orderHistoryReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: {
+        extraArgument: {},
+      },
+    }),
+});
