@@ -11,7 +11,7 @@ const initialFormState = {
 
 export default function PizzaForm() {
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.orderList.loading)
+  const loading = useSelector((state) => state.orderHistory.loading)
   const [formData, setForm] = useState(initialFormState)
   const [error, setError] = useState("")
 
@@ -22,7 +22,7 @@ export default function PizzaForm() {
       setForm((prevFormData) => {
         const updatedToppings = checked
           ? [...prevFormData.toppings, name]
-          : prevFormData.toppings.filter((topping) => topping !== name)
+          : prevFormData.toppings.filter((topping) => topping !== name);
         return { ...prevFormData, toppings: updatedToppings };
       });
     } else {
@@ -36,30 +36,45 @@ export default function PizzaForm() {
 
     if (!fullName.trim()) {
       setError('fullName is required');
-      return
+      return;
     }
     if (fullName.length < 3) {
       setError('fullName must be at least 3 characters')
-      return
+      return;
     }
     if (!['S', 'M', 'L'].includes(size)) {
       setError('size must be one of the following values: S, M, L');
       return;
     }
+
     setError("");
     dispatch(setLoading(true));
 
     try {
-      const toppingIds = toppings.map((topping) => {
-        switch (topping) {
-          case "Pepperoni": return 1;
-          case "Greenpeppers": return 2;
-          case "Pineapple": return 3;
-          case "Mushrooms": return 4;
-          case " Ham": return 5;
-          default: return null;
-        }
-      }).filter(Boolean);
+      const toppingMap = {
+        Pepperoni: 1,
+        Greenpeppers: 2,
+        Pineapple: 3,
+        Mushrooms: 4,
+        Ham: 5,
+      };
+
+      const toppingIds = toppings.map((topping) => toppingMap[topping]).filter(Boolean);
+
+
+      // try {
+      //   const toppingIds = toppings.map((topping) => {
+      //     switch (topping) {
+      //       case "Pepperoni": return 1;
+      //       case "Greenpeppers": return 2;
+      //       case "Pineapple": return 3;
+      //       case "Mushrooms": return 4;
+      //       case "Ham": return 5;
+      //       default: return null;
+      //     }
+      // }).filter(Boolean);
+
+
 
       const updatedFormData = { fullName, size, toppings: toppingIds };
       const response = await dispatch(postOrder(updatedFormData));
@@ -68,10 +83,10 @@ export default function PizzaForm() {
         throw new Error(response.error.message || "Failed to submit order")
       }
       dispatch(addOrder({ ...formData, id: Date.now() }));
-      dispatch(fetchOrders());
+      // dispatch(fetchOrders());
       setForm(initialFormState);
     } catch (err) {
-      setError(err.message || "Failed to submit order")
+      setError(err.message || "Failed to submit order");
     } finally {
       dispatch(setLoading(false))
     }
@@ -83,6 +98,18 @@ export default function PizzaForm() {
       <h2>Pizza Form</h2>
       {loading && <div className='pending'>Order in progress...</div>}
       {error && <div className='failure'>Order failed:{error}</div>}
+
+      <div className="input-group">
+        <label htmlFor="fullName">Full Name</label>
+        <input
+          type="text"
+          id="fullName"
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleChange}
+          placeholder="Type full name"
+          required />
+      </div>
 
       <div className="input-group">
         <label htmlFor="size">Size</label><br />

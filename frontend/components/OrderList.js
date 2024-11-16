@@ -45,7 +45,7 @@ export default function OrderList() {
         {sizes.map((size) => (
           <button
             data-testid={`filterBtn${size}`}
-            className={`button-filter${size === fitler ? ' active' : ''}`}
+            className={`button-filter${size === filter ? ' active' : ''}`}
             onClick={() => handleSizeFilterChange(size)}
             key={size}>
             {size}
