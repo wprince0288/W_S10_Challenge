@@ -1,27 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import orderHistoryReducer from './orderHistorySlice'
-import sizeFilterReducer from './sizeFilterSlice'
-import pizzaFormReducer from './pizzaFormSlice'
+import { postOrder } from './pizzaApie'
 
+middleware: getDefault => getDefault().concat(
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat()
+)
 
-const store = configureStore({
-  reducer: {
-    orderHistory: orderHistoryReducer,
-    sizeFilter: sizeFilterReducer,
-    pizzaOrder: pizzaFormReducer,
-  },
-})
-
-
-export const resetStore = () => {
-return configureStore({
-    reducer: {
-      orderHistory: orderHistoryReducer,
-      sizeFilter: sizeFilterReducer,
-      pizzaOrder: pizzaFormReducer,
-    },
-  })
-}
-
-
-export default store
+export const store = resetStore()

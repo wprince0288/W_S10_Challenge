@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { postOrder } from '../state/pizzaFormSlice';
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { postOrder } from '../state/pizzaApie'
+import { setLoading, addOrder, fetchOrders } from '../state/orderHistorySlice'
 
 const PizzaForm = () => {
   const dispatch = useDispatch();

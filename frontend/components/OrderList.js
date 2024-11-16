@@ -1,21 +1,17 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOrders } from '../state/orderHistorySlice'
-import { setSizeFilter } from '../state/sizeFilterSlice'
+import { fetchOrders, setSizeFilter } from '../state/orderHistorySlice'
 
-const OrderList = () => {
+export default function OrderList() {
   const dispatch = useDispatch();
-  const orders = useSelector((state) => state.orderHistory.orders);
-  const status = useSelector((state) => state.orderHistory.status)
-  const sizeFilter = useSelector(state => state.sizeFilter);
+  const { loading, orders, filter } = useSelector((state) => state.orderList);
 
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchOrders())
-    }
-  }, [status, dispatch])
+    dispatch(fetchOrders())
+  }, [dispatch])
 
-  const filteredOrders = orders.filter(order => 
+
+  const filteredOrders = orders.filter(order =>
     sizeFilter === 'All' || order.size === sizeFilter
   );
 
@@ -27,34 +23,40 @@ const OrderList = () => {
 
 
   return (
-    <div>
+    <div id="orderList">
       <h2>Pizza Orders</h2>
-      {status === 'loading' && <p>Loading...</p>}
-      {status === 'failed' && <p>Error loading orders</p>}
-      <div>
-        {sizes.map((size) => (
-          <button
-          key={size}
-          onClick={() => dispatch(setSizeFilter(size))}
-          >
-            {size}
-          </button>
-        ))}
-        {/* <button onClick={() => handleSizeFilterChange('All')}>All</button>
-        <button onClick={() => handleSizeFilterChange('S')}>S</button>
-        <button onClick={() => handleSizeFilterChange('M')}>M</button>
-        <button onClick={() => handleSizeFilterChange('L')}>L</button> */}
-      </div>
-      <ul>
-        {orders.map((order, index) => (
-          <li key={index}>
-           {order.fullName} ordered a {order.size} pizza with{' '}
-           {order.toppings.length > 0 ? order.toppings.join(', ') : 'no toppings'}.
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+      {loading ? (
+        <div> Loading...</div>) : (
+        <ol>
+          {
+            filteredOrders.map((order) => (
+              <li key={order.id}>
+                <div>
+                  <p>
+                    {order.customer} ordered a size {order.size} with{' '} {order.toppings && order.toppings.length >
+                      0 ? order.toppings.length : 'no'} {' '} toppings
+                  </p>
+                </div>
+              </li>
+            ))}
+        </ol>
+      )}
+      <div id="sizeFilters">
+        Filter by size:
+        {
+          ['ALL', 'S', 'M', 'L'].map(size => {
 
-export default OrderList
+            return <button
+              data-testid={`filterBtn${size}`}
+              className={`button-filter${size === fitler ? ' active' : ''}`}
+              onClick={() => dispatch(setSizeFilter(size))}
+              key={size}>
+              {size}
+            </button>
+          })
+        }
+      </div>
+    </div>
+  )
+}
+
