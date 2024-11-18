@@ -24,11 +24,11 @@ export default function OrderList() {
     <div id="orderList">
       <h2>Pizza Orders</h2>
       {loading ? (
-        <div> Loading...</div>) : (
+        <div> Loading...</div>
+      ) : (
         <ol>
-          {
-            filteredOrders.map((order) => (
-              <li key={order.id}>
+          {filteredOrders.map((order, index) => (
+              <li key={order.id || index}>
                 <div>
                   <p>
                     {order.customer} ordered a size {order.size} with{' '} {order.toppings && order.toppings.length >
@@ -47,7 +47,8 @@ export default function OrderList() {
             data-testid={`filterBtn${size}`}
             className={`button-filter${size === filter ? ' active' : ''}`}
             onClick={() => handleSizeFilterChange(size)}
-            key={size}>
+            key={size}
+            >
             {size}
           </button>
         ))}

@@ -21,7 +21,7 @@ export const postOrder = createAsyncThunk(
                 }
                 throw new Error(errorMessage);
             }
-            return await resoponse.json();
+            return await response.json();
         } catch (error) {
             console.error("Error posting order", error);
             return rejectWithValue({ message: error.message });
