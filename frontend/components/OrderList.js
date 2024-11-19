@@ -12,7 +12,7 @@ export default function OrderList() {
 
 
   const filteredOrders = orders.filter(
-    (order) => filter === 'ALL' || order.size === filter);
+    (order) => filter === 'All' || order.size === filter);
 
   const sizes = ['All', 'S', 'M', 'L']
 
@@ -49,7 +49,7 @@ export default function OrderList() {
             onClick={() => handleSizeFilterChange(size)}
             key={size}
             >
-            {size}
+            {size === 'ALL' ? 'All' : size}
           </button>
         ))}
       </div>

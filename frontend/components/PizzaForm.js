@@ -30,23 +30,9 @@ export default function PizzaForm() {
       setForm((prevFormData) => ({ ...prevFormData, [name]: value }));
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { fullName, size, toppings } = formData;
-
-    // if (!fullName.trim()) {
-    //   setError('fullName is required');
-    //   return;
-    // }
-    // if (fullName.length < 3) {
-    //   setError('fullName must be at least 3 characters')
-    //   return;
-    // }
-    // if (!['S', 'M', 'L'].includes(size)) {
-    //   setError('size must be one of the following values: S, M, L');
-    //   return;
-    // }
 
     setError("");
     dispatch(setLoading(true));
@@ -54,7 +40,7 @@ export default function PizzaForm() {
     try {
       const toppingMap = {
         Pepperoni: 1,
-        GreenPeppers: 2,
+        "Green Peppers": 2,
         Pineapple: 3,
         Mushrooms: 4,
         Ham: 5,
@@ -62,10 +48,10 @@ export default function PizzaForm() {
 
       const toppingIds = toppings.map((topping) => toppingMap[topping]).filter(Boolean);
 
-
+      console.log(toppings);
+      
       const updatedFormData = { fullName, size, toppings: toppingIds };
       const resultAction = await dispatch(postOrder(updatedFormData));
-console.log(resultAction)
       if (resultAction.error) {
         throw new Error(resultAction.payload.message || "Failed to submit order")
       }
@@ -84,8 +70,8 @@ console.log(resultAction)
   return (
     <form onSubmit={handleSubmit}>
       <h2>Pizza Form</h2>
-      {loading && <div className='pending'>Order in progress...</div>}
       {error && <div className='failure'>Order failed: {error}</div>}
+      {loading && <div className='pending'>Order in progress...</div>}
 
       <div className="input-group">
         <label htmlFor="fullName">Full Name</label>
@@ -128,7 +114,3 @@ console.log(resultAction)
     </form>
   );
 }
-
-
-
-

@@ -6,7 +6,7 @@ export const orderHistorySlice = createSlice({
   initialState: {
     loading: true,
     orders: [],
-    filter: 'ALL',
+    filter: 'All',
     error: null
   },
 
