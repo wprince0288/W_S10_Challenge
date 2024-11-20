@@ -28,16 +28,16 @@ export default function OrderList() {
       ) : (
         <ol>
           {filteredOrders.map((order, index) => (
-              <li key={order.id || index}>
-                <div>
-                  <p>
-                    {order.customer} ordered a size {order.size} with{' '} {order.toppings && order.toppings.length >
-                      0 ? order.toppings.length : 'no'}{' '}
-                    toppings
-                  </p>
-                </div>
-              </li>
-            ))}
+            <li key={order.id || index}>
+              <div>
+                <p>
+                  {order.customer} ordered a size {order.size} with{' '} {order.toppings && order.toppings.length >
+                    0 ? order.toppings.length : 'no'}{' '}
+                  toppings
+                </p>
+              </div>
+            </li>
+          ))}
         </ol>
       )}
       <div id="sizeFilters">
@@ -48,8 +48,8 @@ export default function OrderList() {
             className={`button-filter${size === filter ? ' active' : ''}`}
             onClick={() => handleSizeFilterChange(size)}
             key={size}
-            >
-            {size === 'ALL' ? 'All' : size}
+          >
+            {size === 'All' ? 'All' : size}
           </button>
         ))}
       </div>
